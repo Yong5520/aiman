@@ -1,6 +1,6 @@
 api:
   base_url: https://api.deepseek.com
-  key: sk-719f2014f44344158912b8b32d52489c
+  key: 
   model: deepseek-chat
 prompts:
   command_basic: '你是一个Linux命令行专家。请简要说明以下命令的基本用法和最常用的参数。
