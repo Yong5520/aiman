@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 import sys
 import yaml
@@ -18,17 +18,42 @@ class AiMan:
             os.path.expanduser('~/.config/aiman/config.yaml')  # 用户级配置
         ]
         
+        config = {}  # 初始化空配置
+        config_found = False
+        
+        # 按顺序加载配置文件，后加载的会覆盖先加载的
         for config_path in config_paths:
             if os.path.exists(config_path):
                 try:
                     with open(config_path, 'r') as f:
-                        return yaml.safe_load(f)
+                        current_config = yaml.safe_load(f)
+                        if current_config:  # 确保加载的配置不是None
+                            config_found = True
+                            # 递归合并配置
+                            config = self._merge_configs(config, current_config)
                 except Exception as e:
                     print(f"Error reading config file {config_path}: {e}")
                     continue
         
-        # 如果没有找到配置文件
-        raise FileNotFoundError("No config file found. Please run 'aiman --config' to set up configuration.")
+        if not config_found:
+            # 如果没有找到任何配置文件
+            raise FileNotFoundError("No config file found. Please run 'aiman --config' to set up configuration.")
+        
+        return config
+
+    def _merge_configs(self, base, override):
+        """递归合并配置字典"""
+        merged = base.copy()
+        
+        for key, value in override.items():
+            # 如果两个值都是字典，递归合并
+            if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+                merged[key] = self._merge_configs(merged[key], value)
+            else:
+                # 否则直接覆盖
+                merged[key] = value
+            
+        return merged
 
     def _save_config(self, new_config):
         """保存配置到用户目录"""
