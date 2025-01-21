@@ -25,7 +25,7 @@ AI-Man (aiman) 是一个基于大语言模型的Linux命令智能提示工具，
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/yourusername/aiman.git
+git clone https://github.com/Yong5520/aiman.git
 cd aiman
 ```
 
